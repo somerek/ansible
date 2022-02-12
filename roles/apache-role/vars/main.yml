@@ -1,0 +1,3 @@
+---
+# vars file for apache-role
+project_root: /var/www/html

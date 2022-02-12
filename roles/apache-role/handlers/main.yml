@@ -1,0 +1,6 @@
+---
+# handlers file for apache-role
+- name: restart apache
+  service: name=httpd state=restarted
+- name: restart firewall
+  service: name=firewalld state=restarted

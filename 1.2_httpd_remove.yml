@@ -1,0 +1,23 @@
+---
+- name: Remove httpd
+  hosts: nodes
+  become: true
+  vars:
+    project_root: /var/www/html
+  tasks:
+  - name: Remove Apache Webserver
+    yum: pkg=httpd state=absent
+  - name: Delete index file
+    file:
+      state: absent
+      path: "{{ project_root }}/index.html"
+  - name: Close port 80 for http access
+    firewalld:
+      service: http
+      permanent: true
+      state: disabled
+  - name: Restart the firewalld service to load in the firewall changes
+    service: 
+      name: firewalld 
+      state: restarted
+...

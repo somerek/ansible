@@ -1,0 +1,6 @@
+---
+- name: Install ftpd using vsftpd-role  
+  hosts: nodes
+  become: yes
+  roles:
+  - role: vsftpd-role

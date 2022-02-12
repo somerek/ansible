@@ -1,0 +1,31 @@
+---
+- name: Install httpd
+  hosts: nodes
+  become: true
+  vars:
+    project_root: /var/www/html
+  tasks:
+  - name: Install Apache Webserver
+    yum: pkg=httpd state=latest
+  - name: Place the index file at project root
+    copy:
+      content: "Welcome to my web server"
+      dest: "{{ project_root }}/index.html"
+      owner: apache
+      group: apache
+      mode: 0644
+    notify: restart apache
+  - name: Enable Apache on system reboot
+    service: name=httpd enabled=yes state=started
+  - name: Open port 80 for http access & restart firewall if need
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+    notify: restart firewall
+  handlers:
+  - name: restart apache
+    service: name=httpd state=restarted
+  - name: restart firewall
+    service: name=firewalld state=restarted
+...

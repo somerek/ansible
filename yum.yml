@@ -1,0 +1,27 @@
+---
+- name: Fix yum mirrorlist
+  hosts: nodes
+  become: true
+  tasks:
+  - name: Find all repos
+    find:
+      paths: "/etc/yum.repos.d/"
+      patterns: "CentOS-Linux-*.repo"
+    register: repos
+  - name: Comment mirrorlist
+    lineinfile:
+      state: present
+      path: "{{ item.path }}"
+      regexp: '^\s?mirrorlist(.*$)'
+      line: '#mirrorlist\1'
+      backrefs: yes
+    with_items: "{{ repos.files }}"
+  - name: Uncomment baseurl
+    lineinfile:
+      state: present
+      path: "{{ item.path }}"
+      regexp: '^\s?#\s?baseurl=http://mirror.centos.org(.*$)'
+      line: 'baseurl=http://vault.centos.org\1'
+      backrefs: yes
+    with_items: "{{ repos.files }}"
+...

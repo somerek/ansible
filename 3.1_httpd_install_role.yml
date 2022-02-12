@@ -1,0 +1,6 @@
+---
+- name: Install httpd using apache-role  
+  hosts: nodes
+  become: yes
+  roles:
+  - role: apache-role

@@ -1,0 +1,35 @@
+---
+# tasks file for vsftpd-role
+- name: Install packages
+  yum:
+    name:
+      - vsftpd
+      - policycoreutils-python-utils
+    state: latest
+
+- name: Create directory upload
+  file: path="{{ path_upload }}" mode='755' owner=ftp group=ftp state=directory
+
+- name: Change config file
+  ini_file:
+    dest: /etc/vsftpd/vsftpd.conf
+    section: null
+    option: "{{ item.key }}"
+    no_extra_spaces: true
+    value: "{{ item.value }}"
+  loop: "{{ options | dict2items }}"
+  notify: restart vsftpd
+- name: Enable vsftpd on system reboot
+  service: name=vsftpd enabled=yes state=started
+
+# SELinux settings
+- name: Allow vsftpd to modify files in upload
+  sefcontext: target="{{ path_upload }}" setype=public_content_rw_t
+- name: Apply new SELinux file context to filesystem
+  command: restorecon -Rvv {{ path_upload }}
+- name: Set ftpd_anon_write flag on and keep it persistent across reboots
+  seboolean: name=ftpd_anon_write state=yes persistent=yes
+
+- name: Open port 21 for ftp access & restart firewall if need
+  firewalld: service=ftp permanent=true state=enabled
+  notify: restart firewall

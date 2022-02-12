@@ -1,0 +1,21 @@
+---
+# tasks file for apache-role
+- name: Install Apache Webserver
+  yum: pkg=httpd state=latest
+- name: update index file
+  template:
+    src: templates/index.j2
+    dest: "{{ project_root }}/index.html"
+    owner: apache
+    group: apache
+    mode: 0644
+  notify: restart apache
+- name: Enable Apache on system reboot
+  service: name=httpd enabled=yes state=started
+- name: Open port 80 for http access & restart firewall if need
+  firewalld:
+    service: http
+    permanent: true
+    state: enabled
+  notify: restart firewall
+...

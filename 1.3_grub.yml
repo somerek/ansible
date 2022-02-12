@@ -1,0 +1,32 @@
+#There is a bug then option follow right after the quotes!!!
+#For example GRUB_CMDLINE_LINUX="net.ifnames=1 console=tty0"
+---
+- name: Change grub config
+  hosts: nodes
+  vars:
+    path: /etc/default/grub
+  become: true
+  tasks:
+  - name: Add net.ifnames
+    lineinfile:
+      state: present
+      path: "{{ path }}"
+      regexp: '^(GRUB_CMDLINE_LINUX=(?:(?! {{ option | regex_escape }}=).)*)(?: {{ option | regex_escape }}=\S+)?(.*")$'
+      line: '\1 {{ option }}={{ value }}\2'
+      backrefs: yes
+    vars:
+      option: net.ifnames
+      value: 0
+  - name: Add biosdevname
+    lineinfile:
+      state: present
+      path: "{{ path }}"
+      regexp: '^(GRUB_CMDLINE_LINUX=(?:(?! {{ option | regex_escape }}=).)*)(?: {{ option | regex_escape }}=\S+)?(.*")$'
+      line: '\1 {{ option }}={{ value }}\2'
+      backrefs: yes
+    vars:
+      option: biosdevname
+      value: 0
+  - name: Apply grub config
+    command: grub2-mkconfig -o /boot/grub2/grub.cfg
+...
