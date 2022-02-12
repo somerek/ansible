@@ -5,7 +5,7 @@
 on host {{ ansible_host }}
 {{ ansible_facts.default_ipv4.address }} <br>
 All nodes: <br>
-{% for host in groups['all'] %}
+{% for host in groups['nodes'] %}
 Host: {{ hostvars[host]['ansible_facts']['hostname'] }}
 Virt_type: {{ ansible_facts.virtualization_type }}
 Distr: {{ ansible_facts.distribution }}
