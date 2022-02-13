@@ -1,6 +1,8 @@
 ---
 # vars file for vsftpd-role
 path_upload: /var/ftp/pub/upload
+pasv_min_port: 40000
+pasv_max_port: 50000
 options:
   write_enable: "YES"
   anonymous_enable: "YES"
@@ -8,5 +10,8 @@ options:
   anon_upload_enable: "YES"
   anon_mkdir_write_enable: "YES"
   anon_other_write_enable: "YES"
+  pasv_enable: "YES"
   anon_root: /var/ftp/pub
-  anon_umask: '022'
+  anon_umask: "022"
+  pasv_min_port: "{{ pasv_min_port }}"
+  pasv_max_port: "{{ pasv_max_port }}"

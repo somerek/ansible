@@ -33,3 +33,9 @@
 - name: Open port 21 for ftp access & restart firewall if need
   firewalld: service=ftp permanent=true state=enabled
   notify: restart firewall
+- name: Open tcp ports for passive ftp & restart firewall if need
+  firewalld:
+    port: "{{ pasv_min_port }} - {{ pasv_max_port }}/tcp"
+    permanent: true
+    state: enabled
+  notify: restart firewall
