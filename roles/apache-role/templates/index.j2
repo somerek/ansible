@@ -7,8 +7,8 @@ on host {{ ansible_host }}
 All nodes: <br>
 {% for host in groups['nodes'] %}
 Host: {{ hostvars[host]['ansible_facts']['hostname'] }}
-Virt_type: {{ ansible_facts.virtualization_type }}
-Distr: {{ ansible_facts.distribution }}
+Virt_type: {{ hostvars[host]['ansible_facts']['virtualization_type'] }}
+Distr: {{ hostvars[host]['ansible_facts']['distribution'] }}
 FQDN: {{ hostvars[host]['ansible_facts']['fqdn'] }}
 IP: {{ hostvars[host]['ansible_facts']['default_ipv4']['address']}}<br>
 {% endfor %} 
